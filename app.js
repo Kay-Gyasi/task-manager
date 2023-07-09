@@ -3,17 +3,18 @@ const app = express();
 const tasks = require('./routes/tasks');
 const connectDb = require('./db/connect');
 require('dotenv').config();
+const notFound = require('./middleware/not-found');
+const errorHandler = require('./middleware/error-handler');
 
 // middleware
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
+app.use(express.static('./public'));
 
 // routes
- app.get('/', (req, res) => {
-     res.send('Hello baby dragons');
- });
-
  app.use('/api/v1/tasks', tasks);
+ app.use(notFound); // custom generic 404 response
+ app.use(errorHandler); // custom error handler
 
 const port = parseInt(process.env.PORT);
 const start = async () => {
